@@ -35,21 +35,23 @@
 /* timer specific */
 
 .timer {
-  margin: 8px;
-  text-align: center;
+	font-size: 18pt;
+	margin: 8px auto;
+	text-align: center;
+	max-width: 400px;
 }
 
 .time {
-  font-size: 64pt;
+	font-size: 64pt;
 }
 
 .timer .form input {
-  font-size: 24pt;
-  padding: 4pt;
+	font-size: 24pt;
+	padding: 4pt;
 }
 
 .timer .form input[type=text] {
-  width: 200px;
+	width: 200px;
 }
 
 .timer .form {
@@ -63,7 +65,6 @@
 
 .event-table {
 	font-size: 18pt;
-	width: 400px;
 	margin: 0 auto;
 }
 
@@ -92,15 +93,16 @@
 	text-align: left;
 }
 
-.event-table .action-row {
+.action-row {
 	text-align: right;
+	margin: 0 auto;
 }
 
-.event-table .action-row a.dangerous {
+.action-row a.dangerous {
 	color: red;
 	font-weight: bold;
 }
 
-.event-table .action-row a.dangerous:active {
+.action-row a.dangerous:active {
 	color: orange;
 }
