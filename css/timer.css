@@ -1,0 +1,106 @@
+
+.jst-table  {
+	border-collapse: collapse;
+	border: 1px solid #ccc;
+}
+
+.jst-table thead th {
+	border-bottom: 1px solid #ccc;
+	padding: 3px 8px;
+}
+
+.jst-table tbody td {
+	padding: 3px 8px;
+}
+
+.jst-emptymessage {
+	text-align: center;
+	font-style: italic;
+}
+
+/* other general stuff */
+
+.section {
+  border-bottom: 1px solid gray;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+}
+
+.section.last {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+
+/* timer specific */
+
+.timer {
+  margin: 8px;
+  text-align: center;
+}
+
+.time {
+  font-size: 64pt;
+}
+
+.timer .form input {
+  font-size: 24pt;
+  padding: 4pt;
+}
+
+.timer .form input[type=text] {
+  width: 200px;
+}
+
+.timer .form {
+	margin-bottom: 4px;
+}
+
+.recent-events a {
+	display: inline-block;
+	margin-right: 8px;
+}
+
+.event-table {
+	font-size: 18pt;
+	width: 400px;
+	margin: 0 auto;
+}
+
+.event-table table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 8px;
+}
+
+.event-table table thead th {
+	color: #ccc;
+	text-align: center;
+	text-transform: uppercase;
+
+}
+
+.event-table td, .event-table th {
+	border-right: 1px solid #ccc;
+}
+
+.event-table td {
+	text-align: right;
+}
+
+.event-table td.jst-name {
+	text-align: left;
+}
+
+.event-table .action-row {
+	text-align: right;
+}
+
+.event-table .action-row a.dangerous {
+	color: red;
+	font-weight: bold;
+}
+
+.event-table .action-row a.dangerous:active {
+	color: orange;
+}
