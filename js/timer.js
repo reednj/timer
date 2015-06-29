@@ -238,8 +238,22 @@ var RecentTasks = new Class({
 
 	add: function(name) {
 		name = name || 'none';
+		this._data.erase(name);
 		this._data.push(name);
 		this._addLink(name);
+
+		// maybe the link we just added is alredy in the list?
+		// we don't want duplciates, so remove it
+		this.element.getElements('a').each(function(link, i) {
+			if(link.innerHTML == name && i != 0) {
+				link.destroy();
+			}
+		});
+
+		// too many links? get rid of the oldest one
+		if(this._data.length > this._max_links) {
+			this.removeLast();
+		}
 	},
 
 	_addLink: function(name) {
@@ -266,12 +280,15 @@ var RecentTasks = new Class({
 
 	fromObject: function(data) {
 		this.clear();
-		this._data = data || [];
-		var start = (this._data.length - this._max_links).limit(0, this._data.length);
-		for(var i=start; i < this._data.length; i++) {
-			v = this._data[i];
-			this._addLink(v);
+		data = data || [];
+		var start = (data.length - this._max_links).limit(0, data.length);
+		for(var i=start; i < data.length; i++) {
+			this.add(data[i]);
 		}
+	},
+
+	removeLast: function() {
+		this.element.getLast('a').destroy();
 	}
 });
 

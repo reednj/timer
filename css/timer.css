@@ -21,7 +21,7 @@
 /* other general stuff */
 
 .section {
-  border-bottom: 1px solid gray;
+  border-bottom: 1px solid #ccc;
   margin-bottom: 8px;
   padding-bottom: 8px;
 }
@@ -51,7 +51,7 @@
 }
 
 .timer .form input[type=text] {
-	width: 200px;
+	width: 280px;
 }
 
 .timer .form {
