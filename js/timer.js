@@ -46,12 +46,14 @@ var Timer = new Class({
 		if(!e) {
 			$('js-duration').innerHTML = '00:00:00';
 			$('js-event-name').innerHTML = '';
+			$('js-total-duration').innerHTML = 'total: 00:00'
 			return;
 		}
 
 		this._updateEventRow(e);
 		$('js-duration').innerHTML = e.durationString();
 		$('js-event-name').innerHTML = e.name();
+		$('js-total-duration').innerHTML = 'total: ' + DateHelper.asDuration(this._events.totalDuration(), 'S');
 	},
 
 	startEvent: function(name) {
@@ -218,6 +220,26 @@ var DateHelper = {
 	asTime: function(t) {
 		d = new Date(t);
 		return d.getHours().pad() + ':' + d.getMinutes().pad();
+	},
+
+	asDuration: function(t, format) {
+		format = format || 'L'; // L | S
+
+		var ms = t;
+		var ts = ms / 1000;
+		var tm = ts / 60;
+		var th = tm / 60;
+
+		var h = Math.floor(th);
+		var m = Math.floor(tm % 60);
+		var s = Math.floor(ts % 60);
+
+		var result = h.pad() + ':' + m.pad();
+
+		if(format == 'L')
+			result +=':' + s.pad();
+
+		return  result;
 	}
 };
 
@@ -329,22 +351,7 @@ var Event = new Class({
 	durationString: function(format) {
 		format = format || 'L'; // L | S
 		var d = this.duration();
-
-		var ms = d;
-		var ts = ms / 1000;
-		var tm = ts / 60;
-		var th = tm / 60;
-
-		var h = Math.floor(th);
-		var m = Math.floor(tm % 60);
-		var s = Math.floor(ts % 60);
-
-		var result = h.pad() + ':' + m.pad();
-
-		if(format == 'L')
-			result +=':' + s.pad();
-
-		return  result;
+		return  DateHelper.asDuration(d, format);
 	},
 
 	isRunning: function() {
