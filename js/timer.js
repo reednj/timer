@@ -23,6 +23,10 @@ var Timer = new Class({
 			this.reset();
 		}.bind(this));
 
+		$('js-stop').addEvent('click', function() {
+			this.stop();
+		}.bind(this));
+
 		this._eventTable = this._createEventTable();
 		this._updateDisplay.periodical(500, this);
 
@@ -73,6 +77,10 @@ var Timer = new Class({
 		$('js-event-name').innerHTML = e.name();
 
 		this.save();
+	},
+
+	stop: function() {
+		this._events.stop();
 	},
 
 	_addEventRow: function(e) {
@@ -170,6 +178,13 @@ var EventList = new Class({
 		var e = new Event({name: name});
 		this._data.push(e);
 		return e;
+	},
+
+	stop: function() {
+		if(this.current() != null)
+			this.current().finish();
+
+		return this.current();
 	},
 
 	current: function() {
