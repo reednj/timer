@@ -181,10 +181,12 @@ var EventList = new Class({
 	},
 
 	stop: function() {
-		if(this.current() != null)
+		if(this.current() != null) {
 			this.current().finish();
+			this.save();
+		}
 
-		return this.current();
+		return this;
 	},
 
 	current: function() {
@@ -226,6 +228,20 @@ var EventList = new Class({
 		}
 
 		return Date.now() - this._data[0].start();
+	},
+	
+	summarize: function() {
+		var result = {};
+
+		this._data.each(function(e) {
+			result[e.name()] = (result[e.name()] || 0) + e.duration();
+		});
+
+		result = Object.map(result, function(v, k) {
+			return {name: k, duration: v};
+		});
+
+		return Object.values(result);
 	}
 });
 
