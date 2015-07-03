@@ -32,7 +32,7 @@
 }
 
 
-/* timer specific */
+/* user input */
 
 .timer {
 	font-size: 18pt;
@@ -61,6 +61,12 @@
 .recent-events a {
 	display: inline-block;
 	margin-right: 8px;
+}
+
+/* tables */
+
+.section.event-table {
+	border-bottom: none;
 }
 
 .event-table {
@@ -93,6 +99,11 @@
 	text-align: left;
 }
 
+.event-table td.jst-length {
+	width: 50px;
+}
+
+/* action row (for stopping, clearing etc) */
 .action-row {
 	text-align: right;
 	margin: 0 auto;

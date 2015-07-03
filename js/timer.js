@@ -28,6 +28,7 @@ var Timer = new Class({
 		}.bind(this));
 
 		this._eventTable = this._createEventTable();
+		this._summaryTable = this._createSummaryTable();
 		this._updateDisplay.periodical(500, this);
 
 		this.load();
@@ -39,6 +40,15 @@ var Timer = new Class({
 		table.addColumn('name');
 		table.addColumn('start');
 		table.addColumn('end');
+		table.addColumn('length');
+
+		return table;
+	},
+
+	_createSummaryTable: function() {
+		var table = new JsTable('js-summary-table', {empty_message: ''});
+		
+		table.addColumn('name');
 		table.addColumn('length');
 
 		return table;
@@ -90,11 +100,16 @@ var Timer = new Class({
 		this._eventTable.addRow(e.name(), start, end, length);
 	},
 
+	_addSummaryRow: function(e) {
+		var length = DateHelper.asDuration(e.duration, 'S');
+		this._summaryTable.addRow(e.name, length);
+	},
+
 	// just assume we are updating the final row.
 	// also assume the name and the start time can't change, only the 
 	// end and duration
 	_updateEventRow: function(e) {
-		var end = e.end() == null ? '-' :   DateHelper.asTime(e.end());
+		var end = e.end() == null ? '-' : DateHelper.asTime(e.end());
 		var length = e.durationString('S');
 		var row_id = this._eventTable.rowCount() - 1;
 		
@@ -118,6 +133,7 @@ var Timer = new Class({
 		this._events.load();
 		this._recent.load();
 		this._reloadEventTable();
+		this._reloadSummaryTable();
 		this._updateDisplay();
 	},
 
@@ -133,6 +149,13 @@ var Timer = new Class({
 		this._eventTable.clear();
 		this._events.each(function(e) {
 			this._addEventRow(e);
+		}.bind(this));
+	},
+
+	_reloadSummaryTable: function() {
+		this._summaryTable.clear();
+		this._events.summarize().each(function(e) {
+			this._addSummaryRow(e);
 		}.bind(this));
 	}
 });
