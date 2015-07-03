@@ -46,10 +46,22 @@ var Timer = new Class({
 	},
 
 	_createSummaryTable: function() {
-		var table = new JsTable('js-summary-table', {empty_message: ''});
+		var table = new JsTable('js-summary-table', {empty_message: '...'});
 		
 		table.addColumn('name');
 		table.addColumn('length');
+
+		// there should really be a method on the jstable to allow
+		// the adding of more headers.
+		//
+		// The whle jstable is actually not as good as I thought it was
+		// when I fist developed it. I'm kind of embarrased now...
+		$e('tr', {
+			children: $e('th', {
+				colspan: 2,
+				text: 'summary'
+			}) 
+		}).inject(table.element.getElement('thead'), 'top');
 
 		return table;
 	},
