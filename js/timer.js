@@ -167,31 +167,6 @@ var Timer = new Class({
 	}
 });
 
-var CookiePersist = new Class({
-	save: function() {
-		if(!this._cookie_id || typeof this._cookie_id != 'string')
-			throw 'Must set this._cookie_id to save object';
-
-		if(!this.toObject)
-			throw 'Must implement this.toObject() in order to save object';
-
-		var data = this.toObject();
-		var json = JSON.encode(data);
-		Cookie.write(this._cookie_id, json, {duration: 90});
-	},
-
-	load: function() {
-		if(!this._cookie_id || typeof this._cookie_id != 'string')
-			throw 'Must set this._cookie_id to load object';
-
-		if(!this.fromObject)
-			throw 'Must implement this.fromObject() in order to load object';
-
-		var json = Cookie.read(this._cookie_id);
-		return json == null ? null : this.fromObject(JSON.decode(json));
-	}
-});
-
 var EventList = new Class({
 	Implements: CookiePersist, 
 	initialize: function() {

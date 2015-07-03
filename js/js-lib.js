@@ -127,3 +127,44 @@ $e = function(tag, props) {
 
    return new_element
 }
+
+// CookiePersist
+//
+// Usage: Add to a mootools class using the Implements: property
+//
+// This extension class implements two methods, load(), and save(), which are
+// used to persist and load the object from json. In order to generate the json
+// to be saved the target class must implement the methods toObject() and fromObject()
+// which conver the class instance into a POJO that can be serialized to json
+//
+// The target class must also specify the variable this._cookie_id, so that
+// we know which cookie to store the data in. By default the cookies have an
+// expiry of 90 days.
+//
+// License: MIT-Style License
+// Nathan Reed (c) 2015
+//
+var CookiePersist = new Class({
+   save: function() {
+      if(!this._cookie_id || typeof this._cookie_id != 'string')
+         throw 'Must set this._cookie_id to save object';
+
+      if(!this.toObject)
+         throw 'Must implement this.toObject() in order to save object';
+
+      var data = this.toObject();
+      var json = JSON.encode(data);
+      Cookie.write(this._cookie_id, json, {duration: 90});
+   },
+
+   load: function() {
+      if(!this._cookie_id || typeof this._cookie_id != 'string')
+         throw 'Must set this._cookie_id to load object';
+
+      if(!this.fromObject)
+         throw 'Must implement this.fromObject() in order to load object';
+
+      var json = Cookie.read(this._cookie_id);
+      return json == null ? null : this.fromObject(JSON.decode(json));
+   }
+});
