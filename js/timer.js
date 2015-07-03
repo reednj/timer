@@ -68,6 +68,10 @@ var Timer = new Class({
 		$('js-duration').innerHTML = e.durationString();
 		$('js-event-name').innerHTML = e.name();
 		$('js-total-duration').innerHTML = 'total: ' + DateHelper.asDuration(this._events.totalDuration(), 'S');
+
+		if(e.isNewMinute()) {
+			this._reloadSummaryTable();
+		}
 	},
 
 	startEvent: function(name) {
@@ -79,13 +83,15 @@ var Timer = new Class({
 		var previous = this._events.current();
 		var e = this._events.startNew(name);
 
-		if(previous) 
+		if(previous) {
 			this._updateEventRow(previous);
+		}
 
 		this._addEventRow(e);
 		this._recent.add(e.name());
 		$('js-event-name').innerHTML = e.name();
 
+		this._reloadSummaryTable();
 		this.save();
 	},
 
@@ -141,6 +147,7 @@ var Timer = new Class({
 		this._events.reset();
 
 		this._reloadEventTable();
+		this._reloadSummaryTable();
 		this._updateDisplay();
 		this.save();
 	},
@@ -400,6 +407,14 @@ var Event = new Class({
 
 	duration: function() {
 		return (this._end || Date.now()) - this._start;
+	},
+
+	// if it is the first 500ms of a new minute then this will
+	// return true. Not really a good general method, but it is 
+	// used by the parent display classes for know when to update
+	// things
+	isNewMinute: function() {
+		return Math.round(this.duration() / 500) % 120 == 0;
 	},
 
 	durationString: function(format) {
