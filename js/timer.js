@@ -246,7 +246,7 @@ var EventList = new Class({
 			return {name: k, duration: v};
 		});
 
-		return Object.values(result);
+		return Object.values(result).sort(function(a,b) { return b.duration - a.duration; });
 	}
 });
 
