@@ -388,7 +388,10 @@ var Event = new Class({
 	},
 
 	finish: function() {
-		this._end = Date.now();
+		if(this._end == null) {
+			this._end = Date.now();
+		}
+		
 		return this._end;
 	},
 
