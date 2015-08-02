@@ -213,6 +213,16 @@ var EventList = new Class({
 		return this._data[this._data.length - 1];
 	},
 
+	first: function() {
+		if(this._data)
+			return this._data[0];
+	},
+
+	last: function() {
+		if(this._data)
+			return this._data[this._data.length - 1];
+	},
+
 	each: function(fn) {
 		return Array.each(this._data || [], fn);
 	},
@@ -244,7 +254,7 @@ var EventList = new Class({
 			return 0;
 		}
 
-		return Date.now() - this._data[0].start();
+		return (this.last().end() || Date.now()) - this.first().start();
 	},
 	
 	summarize: function() {
