@@ -1,7 +1,10 @@
 var Timer = new Class({
+	Implements: CookiePersist,
 	initialize: function(element, options) {
 		this.element = $(element);
 		this.options = options || {};
+
+		this._cookie_id = 'timer-data';
 
 		this._events = new EventList();
 		this._recent = new RecentTasks('js-recent-tasks', {
@@ -141,15 +144,17 @@ var Timer = new Class({
 		(function() { input.setStyle('background-color', ''); }).delay(500);
 	},
 
-	// save to a cookie
-	save: function() {
-		this._recent.save();
-		this._events.save();
+	toObject: function() {
+		return {
+			events: this._events.toObject(),
+			recent: this._recent.toObject()
+		}
 	},
 
-	load: function() {
-		this._events.load();
-		this._recent.load();
+	fromObject: function(data) {
+		this._events.fromObject(data.events);
+		this._recent.fromObject(data.recent);
+
 		this._reloadEventTable();
 		this._reloadSummaryTable();
 		this._updateDisplay();
@@ -180,10 +185,8 @@ var Timer = new Class({
 });
 
 var EventList = new Class({
-	Implements: CookiePersist, 
 	initialize: function() {
 		this._data = [];
-		this._cookie_id = 'events';
 	},
 
 	startNew: function(name) {
@@ -302,7 +305,7 @@ var DateHelper = {
 };
 
 var RecentTasks = new Class({
-	Implements: [Options, CookiePersist],
+	Implements: Options,
 	options: {
 		onClick: function(name) {}
 	},
@@ -310,7 +313,6 @@ var RecentTasks = new Class({
 		this.element = $(element);
 		this.setOptions(options);
 		this._data = [];
-		this._cookie_id = 'recent-tasks';
 		this._max_links = 5;
 
 		this.clear();
