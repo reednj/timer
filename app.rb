@@ -9,6 +9,18 @@ require 'erubis'
 
 require 'securerandom'
 
+set :erb, :escape_html => true
+
+helpers do
+	def post_data
+		request.body.rewind
+		request.body.read
+	end
+
+	def from_json(data)
+		JSON.parse(data, {:symbolize_names => true})
+	end
+end
 
 get '/' do
 	key = SecureRandom.hex(4)
@@ -20,9 +32,18 @@ get '/t/:key.json' do |key|
 	TimerData.load(key)
 end
 
+post '/t/:key.json' do |key|
+	json_data = from_json(post_data)
+	TimerData.save(key, json_data)
+end
+
 get '/t/:key' do |key| 
 	erb :index, :locals => {
-		:js => TimerData.load(key)
+		:js => {
+			:key => key,
+			:version => Time.now.to_f,
+			:data => from_json(TimerData.load(key))
+		}
 	}
 end
 

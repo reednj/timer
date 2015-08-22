@@ -35,6 +35,12 @@ var Timer = new Class({
 		this._updateDisplay.periodical(500, this);
 
 		this.load();
+
+		// test save...
+		new Request.JSON({ 
+			url: '/t/' + _js.key + '.json',
+			method: 'POST'
+		}).send(JSON.encode(this.toObject()));
 	},
 
 	_createEventTable: function() {
