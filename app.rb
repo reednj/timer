@@ -42,7 +42,7 @@ get '/t/:key' do |key|
 	erb :index, :locals => {
 		:js => {
 			:key => key,
-			:version => Time.now.to_f,
+			:version => TimerData.version(key),
 			:data => from_json(TimerData.load(key))
 		}
 	}
@@ -50,6 +50,10 @@ end
 
 class TimerData
 	@dir = 'data'
+
+	def self.version(key)
+		File.mtime(path key).to_i
+	end
 
 	def self.load(key)
 		create_path!
