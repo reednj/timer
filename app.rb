@@ -116,7 +116,7 @@ class TimerData
 	end
 
 	def self.create_path!
-		Dir.mkdir(@dir) unless Dir.exist? @dir
+		Dir.mkdir(@dir) unless File.exist?(@dir) && File.directory?(@dir)
 	end
 
 end
