@@ -20,6 +20,10 @@ helpers do
 	def from_json(data)
 		JSON.parse(data, {:symbolize_names => true})
 	end
+
+	def halt_with_text(code, message = nil)
+		halt code, {'Content-Type' => 'text/plain'}, message
+	end
 end
 
 get '/' do
@@ -39,6 +43,8 @@ post '/t/:key.json' do |key|
 end
 
 get '/t/:key' do |key| 
+	halt_with_text 404, 'Not Found' unless TimerData.exist? key
+
 	erb :index, :locals => {
 		:js => {
 			:key => key,
@@ -53,6 +59,10 @@ class TimerData
 
 	def self.version(key)
 		File.mtime(path key).to_i
+	end
+
+	def self.exist?(key)
+		File.exist?(path key)
 	end
 
 	def self.load(key)

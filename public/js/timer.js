@@ -37,10 +37,6 @@ var Timer = new Class({
 		this._summaryTable = this._createSummaryTable();
 		this._updateDisplay.periodical(500, this);
 
-		if(_js.data) {
-			this.fromObject(_js.data);
-		}
-
 		this.load();
 	},
 
@@ -170,11 +166,26 @@ var Timer = new Class({
 	save: function() {
 		new Request.JSON({ 
 			url: '/t/' + this._key + '.json',
-			method: 'POST'
+			method: 'POST',
+			onFailure: function(xhr) {
+				error_message = 'could not save (unknown error)';
+
+				if(xhr.responseText && xhr.responseText.length < 256) {
+					error_message = 'could not save (' + xhr.responseText + ')';
+				}
+
+				alert(error_message);
+			}
 		}).send(JSON.encode(this.toObject()));
 	},
 
 	load: function() {
+		// no updating from the server at the moment... user has to refresh the 
+		// page if the data has changed somewhere else
+		if(_js.data) {
+			this.fromObject(_js.data);
+		}
+
 	},
 
 	reset: function() {
