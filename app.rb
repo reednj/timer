@@ -32,11 +32,22 @@ get '/' do
 	redirect to("/t/#{key}")
 end
 
-get '/t/:key.json' do |key| 
+get '/t/:key.json' do |key|
+	halt_with_text 404, 'Not Found' unless TimerData.exist? key
 	TimerData.load(key)
 end
 
 post '/t/:key.json' do |key|
+	# if this file exists already, we need to make sure that the client is updating
+	# from the same version, otherwise two clients could overwrite each others data
+	# this way the save will fail if the versions are not the same
+	if TimerData.exist? key
+		updating_version = params[:v].to_i
+		saved_version = TimerData.version key
+		halt_with_text 500, 'version mismatch' if updating_version != saved_version
+	end
+
+	# now save the data and send the new verison number back to the client
 	json_data = from_json(post_data)
 	version = TimerData.save(key, json_data)
 	json :version => version

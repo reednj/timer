@@ -165,7 +165,7 @@ var Timer = new Class({
 
 	save: function() {
 		new Request.JSON({ 
-			url: '/t/' + this._key + '.json',
+			url: '/t/' + this._key + '.json?v=' + this._version,
 			onFailure: function(xhr) {
 				error_message = 'could not save (unknown error)';
 
