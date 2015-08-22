@@ -35,6 +35,7 @@ end
 post '/t/:key.json' do |key|
 	json_data = from_json(post_data)
 	TimerData.save(key, json_data)
+	200
 end
 
 get '/t/:key' do |key| 

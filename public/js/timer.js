@@ -1,10 +1,13 @@
 var Timer = new Class({
-	Implements: CookiePersist,
 	initialize: function(element, options) {
 		this.element = $(element);
 		this.options = options || {};
 
 		this._cookie_id = 'timer-data';
+
+		// the version and key let us sync with the server...
+		this._version = this.options.version || _js.version;
+		this._key = this.options.key || _js.key;
 
 		this._events = new EventList();
 		this._recent = new RecentTasks('js-recent-tasks', {
@@ -34,13 +37,11 @@ var Timer = new Class({
 		this._summaryTable = this._createSummaryTable();
 		this._updateDisplay.periodical(500, this);
 
-		this.load();
+		if(_js.data) {
+			this.fromObject(_js.data);
+		}
 
-		// test save...
-		new Request.JSON({ 
-			url: '/t/' + _js.key + '.json',
-			method: 'POST'
-		}).send(JSON.encode(this.toObject()));
+		this.load();
 	},
 
 	_createEventTable: function() {
@@ -164,6 +165,16 @@ var Timer = new Class({
 		this._reloadEventTable();
 		this._reloadSummaryTable();
 		this._updateDisplay();
+	},
+
+	save: function() {
+		new Request.JSON({ 
+			url: '/t/' + this._key + '.json',
+			method: 'POST'
+		}).send(JSON.encode(this.toObject()));
+	},
+
+	load: function() {
 	},
 
 	reset: function() {
