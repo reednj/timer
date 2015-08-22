@@ -27,8 +27,15 @@ helpers do
 end
 
 get '/' do
-	key = SecureRandom.hex(4)
-	TimerData.save(key, { :events => nil, :recent => nil })
+	key = request.cookies['timer_key']
+	
+	# we try to get the last used key from the cookie, but if we don't have it
+	# then just generate a random one
+	if key.nil?
+		key = SecureRandom.hex(4) 
+		TimerData.save(key, { :events => nil, :recent => nil })
+	end
+
 	redirect to("/t/#{key}")
 end
 
@@ -55,6 +62,15 @@ end
 
 get '/t/:key' do |key| 
 	halt_with_text 404, 'Not Found' unless TimerData.exist? key
+
+	# save the key to the cookie, so when the user comes back to the website we can
+	# automatically redirect to this page, otherwise the data will be lost, unless the user
+	# can remember the id
+	response.set_cookie('timer_key', 
+		:value => key,
+		:path => '/',
+		:expires => Time.now + (3600 * 24 * 365)
+	)
 
 	erb :index, :locals => {
 		:js => {
