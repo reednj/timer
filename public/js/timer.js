@@ -3,6 +3,12 @@ var Timer = new Class({
 		this.element = $(element);
 		this.options = options || {};
 
+		this._cookie_id = 'timer-data';
+
+		// the version and key let us sync with the server...
+		this._version = this.options.version || _js.version;
+		this._key = this.options.key || _js.key;
+
 		this._events = new EventList();
 		this._recent = new RecentTasks('js-recent-tasks', {
 			onClick: function(name) {
@@ -141,18 +147,45 @@ var Timer = new Class({
 		(function() { input.setStyle('background-color', ''); }).delay(500);
 	},
 
-	// save to a cookie
-	save: function() {
-		this._recent.save();
-		this._events.save();
+	toObject: function() {
+		return {
+			events: this._events.toObject(),
+			recent: this._recent.toObject()
+		}
 	},
 
-	load: function() {
-		this._events.load();
-		this._recent.load();
+	fromObject: function(data) {
+		this._events.fromObject(data.events);
+		this._recent.fromObject(data.recent);
+
 		this._reloadEventTable();
 		this._reloadSummaryTable();
 		this._updateDisplay();
+	},
+
+	save: function() {
+		new Request.JSON({ 
+			url: '/t/' + this._key + '.json',
+			method: 'POST',
+			onFailure: function(xhr) {
+				error_message = 'could not save (unknown error)';
+
+				if(xhr.responseText && xhr.responseText.length < 256) {
+					error_message = 'could not save (' + xhr.responseText + ')';
+				}
+
+				alert(error_message);
+			}
+		}).send(JSON.encode(this.toObject()));
+	},
+
+	load: function() {
+		// no updating from the server at the moment... user has to refresh the 
+		// page if the data has changed somewhere else
+		if(_js.data) {
+			this.fromObject(_js.data);
+		}
+
 	},
 
 	reset: function() {
@@ -180,10 +213,8 @@ var Timer = new Class({
 });
 
 var EventList = new Class({
-	Implements: CookiePersist, 
 	initialize: function() {
 		this._data = [];
-		this._cookie_id = 'events';
 	},
 
 	startNew: function(name) {
@@ -302,7 +333,7 @@ var DateHelper = {
 };
 
 var RecentTasks = new Class({
-	Implements: [Options, CookiePersist],
+	Implements: Options,
 	options: {
 		onClick: function(name) {}
 	},
@@ -310,7 +341,6 @@ var RecentTasks = new Class({
 		this.element = $(element);
 		this.setOptions(options);
 		this._data = [];
-		this._cookie_id = 'recent-tasks';
 		this._max_links = 5;
 
 		this.clear();
