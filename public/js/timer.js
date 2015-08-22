@@ -166,7 +166,6 @@ var Timer = new Class({
 	save: function() {
 		new Request.JSON({ 
 			url: '/t/' + this._key + '.json',
-			method: 'POST',
 			onFailure: function(xhr) {
 				error_message = 'could not save (unknown error)';
 
@@ -175,8 +174,11 @@ var Timer = new Class({
 				}
 
 				alert(error_message);
-			}
-		}).send(JSON.encode(this.toObject()));
+			},
+			onSuccess: function() {
+				
+			}.bind(this)
+		}).post(JSON.encode(this.toObject()));
 	},
 
 	load: function() {

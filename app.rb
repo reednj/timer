@@ -38,8 +38,8 @@ end
 
 post '/t/:key.json' do |key|
 	json_data = from_json(post_data)
-	TimerData.save(key, json_data)
-	200
+	version = TimerData.save(key, json_data)
+	json :version => version
 end
 
 get '/t/:key' do |key| 
@@ -75,6 +75,7 @@ class TimerData
 
 		data = data.to_json
 		File.write(path(key), data)
+		version(key)
 	end
 
 	def self.path(key)
