@@ -101,8 +101,14 @@ class TimerData
 		create_path!
 
 		data = data.to_json
-		File.write(path(key), data)
+		write(path(key), data)
 		version(key)
+	end
+
+	def self.write(p, data)
+		File.open(p, 'w:UTF-8') { |file|
+			file.write(data)
+		}
 	end
 
 	def self.path(key)
