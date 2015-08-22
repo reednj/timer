@@ -115,6 +115,7 @@ var Timer = new Class({
 
 	stop: function() {
 		this._events.stop();
+		this.save();
 	},
 
 	_addEventRow: function(e) {
@@ -175,8 +176,10 @@ var Timer = new Class({
 
 				alert(error_message);
 			},
-			onSuccess: function() {
-				
+			onSuccess: function(data) {
+				if(data && data.version) {
+					this._version = data.version;
+				}
 			}.bind(this)
 		}).post(JSON.encode(this.toObject()));
 	},
@@ -233,7 +236,6 @@ var EventList = new Class({
 	stop: function() {
 		if(this.current() != null) {
 			this.current().finish();
-			this.save();
 		}
 
 		return this;
